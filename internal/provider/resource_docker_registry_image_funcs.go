@@ -216,7 +216,7 @@ func createImageBuildOptions(buildOptions map[string]interface{}) types.ImageBui
 	buildImageOptions.Target = buildOptions["target"].(string)
 	buildImageOptions.SessionID = buildOptions["session_id"].(string)
 	buildImageOptions.Platform = buildOptions["platform"].(string)
-	buildImageOptions.Version = types.BuilderVersion(buildOptions["version"].(string))
+	buildImageOptions.Version = "1" // types.BuilderV1 // types.BuilderVersion(buildOptions["version"].(string))
 	buildImageOptions.BuildID = buildOptions["build_id"].(string)
 	// outputs
 
@@ -265,7 +265,7 @@ func buildDockerRegistryImage(ctx context.Context, client *client.Client, buildO
 		buildContext = buildContext[:lastIndex]
 	}
 
-	enableBuildKitIfSupported(ctx, client, &imageBuildOptions)
+	// enableBuildKitIfSupported(ctx, client, &imageBuildOptions)
 
 	buildCtx, relDockerfile, err := prepareBuildContext(buildContext, imageBuildOptions.Dockerfile)
 	if err != nil {
