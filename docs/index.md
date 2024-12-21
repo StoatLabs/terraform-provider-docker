@@ -24,8 +24,8 @@ Terraform 0.13 and later:
 terraform {
   required_providers {
     docker = {
-      source  = "kreuzwerker/docker"
-      version = "2.25.0"
+      source  = "stoatlabs/docker"
+      version = "2.26.0"
     }
   }
 }
@@ -50,7 +50,7 @@ Terraform 0.12 and earlier:
 
 ```terraform
 provider "docker" {
-  version = "~> 2.25.0"
+  version = "~> 2.26.0"
   host    = "unix:///var/run/docker.sock"
 }
 

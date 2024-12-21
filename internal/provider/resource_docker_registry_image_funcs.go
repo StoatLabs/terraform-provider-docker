@@ -37,6 +37,18 @@ func resourceDockerRegistryImageCreate(ctx context.Context, d *schema.ResourceDa
 
 	pushOpts := createPushImageOptions(name)
 
+	// Authenticate with the registry before we attempt to build such that if the image needs
+	// to pull any other images, we will be authenticated for such.
+	// First get the auth config for the registry.
+	authConfig, err := getAuthConfigForRegistry(pushOpts.Registry, providerConfig)
+	if err != nil {
+		return diag.Errorf("resourceDockerRegistryImageCreate: Unable to get authConfig for registry: %s", err)
+	}
+
+	if err := loginToRegistry(ctx, client, authConfig); err != nil {
+		return diag.Errorf("resourceDockerRegistryImageCreate: Unable to login to registry: %s", err)
+	}
+
 	if buildOptions, ok := d.GetOk("build"); ok {
 		buildOptionsMap := buildOptions.([]interface{})[0].(map[string]interface{})
 		err := buildDockerRegistryImage(ctx, client, buildOptionsMap, pushOpts.FqName)
@@ -45,10 +57,6 @@ func resourceDockerRegistryImageCreate(ctx context.Context, d *schema.ResourceDa
 		}
 	}
 
-	authConfig, err := getAuthConfigForRegistry(pushOpts.Registry, providerConfig)
-	if err != nil {
-		return diag.Errorf("resourceDockerRegistryImageCreate: Unable to get authConfig for registry: %s", err)
-	}
 	if err := pushDockerRegistryImage(ctx, client, pushOpts, authConfig.Username, authConfig.Password); err != nil {
 		return diag.Errorf("Error pushing docker image: %s", err)
 	}
@@ -462,6 +470,18 @@ func getAuthConfigForRegistry(
 		return authConfig, nil
 	}
 	return types.AuthConfig{}, fmt.Errorf("no auth config found for registry %s in auth configs: %#v", registryWithoutProtocol, providerConfig.AuthConfigs.Configs)
+}
+
+func loginToRegistry(ctx context.Context, client *client.Client, authConfig types.AuthConfig) error {
+	authResponse, err := client.RegistryLogin(ctx, authConfig)
+
+	if err != nil {
+		return err
+	}
+
+	log.Printf("[DEBUG] Login response: %+v", authResponse)
+
+	return nil
 }
 
 func buildHttpClientForRegistry(registryAddressWithProtocol string, insecureSkipVerify bool) *http.Client {
