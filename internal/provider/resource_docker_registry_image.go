@@ -42,7 +42,7 @@ func resourceDockerRegistryImage() *schema.Resource {
 				Description: "Definition for building the image",
 				Optional:    true,
 				MaxItems:    1,
-				Deprecated:  "Use `docker_image` resource instead. This field will be removed in the next major release.",
+				// Deprecated:  "Use `docker_image` resource instead. This field will be removed in the next major release.",
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"suppress_output": {
