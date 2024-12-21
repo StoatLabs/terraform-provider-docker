@@ -2,7 +2,7 @@ terraform {
   required_providers {
     docker = {
       source  = "stoatlabs/docker"
-      version = "2.26.0"
+      version = "2.26.1"
     }
   }
 }

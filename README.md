@@ -35,7 +35,7 @@ $ make build
 
 ## Example usage
 
-Take a look at the examples in the [documentation](https://registry.terraform.io/providers/stoatlabs/docker/2.26.0/docs) of the registry
+Take a look at the examples in the [documentation](https://registry.terraform.io/providers/stoatlabs/docker/2.26.1/docs) of the registry
 or use the following example:
 
 
@@ -47,7 +47,7 @@ terraform {
     # since new versions are released frequently
     docker = {
       source  = "stoatlabs/docker"
-      version = "2.26.0"
+      version = "2.26.1"
     }
   }
 }
